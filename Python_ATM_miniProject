@@ -1,0 +1,100 @@
+
+import getpass
+
+class ATM:
+    def __init__(self):
+        self.user_pin = ''
+        self.account_balance = 0
+        
+    def display_menu(self):
+        while True:
+            print("\n" + "="*40)
+            print("💳 Welcome to the ATM 💳".center(40))
+            print("="*40)
+            print("1️⃣  Create a new PIN")
+            print("2️⃣  Change existing PIN")
+            print("3️⃣  Check account balance")
+            print("4️⃣  Withdraw money")
+            print("5️⃣  Exit")
+            print("="*40)
+
+            user_choice = input("👉 Please select an option: ")
+
+            if user_choice == '1':
+                self.create_new_pin()
+            elif user_choice == '2':
+                self.update_pin()
+            elif user_choice == '3':
+                self.view_balance()
+            elif user_choice == '4':
+                self.withdraw_money()
+            elif user_choice == '5':
+                print("\n🙏 Thank you for using our ATM! Have a great day! 🙌")
+                break
+            else:
+                print("❌ Invalid input! Please select a valid option.")
+
+    def create_new_pin(self):
+        while True:
+            new_pin = getpass.getpass("🔑 Set a 4-digit PIN: ")
+            if new_pin.isdigit() and len(new_pin) == 4:
+                self.user_pin = new_pin
+                break
+            else:
+                print("❌ Invalid PIN! Please enter exactly 4 digits.")
+
+        while True:
+            try:
+                self.account_balance = float(input("💰 Enter your initial deposit amount: "))
+                if self.account_balance >= 0:
+                    break
+                else:
+                    print("❌ Balance cannot be negative!")
+            except ValueError:
+                print("❌ Invalid amount! Please enter a valid number.")
+
+        print("✅ PIN created successfully & account balance updated!")
+
+    def update_pin(self):
+        old_pin = getpass.getpass("🔑 Enter your current PIN: ")
+        if old_pin == self.user_pin:
+            while True:
+                new_pin = getpass.getpass("🔄 Set a new 4-digit PIN: ")
+                if new_pin.isdigit() and len(new_pin) == 4:
+                    self.user_pin = new_pin
+                    print("✅ PIN updated successfully!")
+                    break
+                else:
+                    print("❌ Invalid PIN! Please enter exactly 4 digits.")
+        else:
+            print("❌ Incorrect PIN! Access denied.")
+
+    def view_balance(self):
+        entered_pin = getpass.getpass("🔑 Enter your PIN to check balance: ")
+        if entered_pin == self.user_pin:
+            print(f"💵 Your account balance is: ₹{self.account_balance:.2f}")
+        else:
+            print("❌ Incorrect PIN! Access denied.")
+
+    def withdraw_money(self):
+        entered_pin = getpass.getpass("🔑 Enter your PIN to withdraw money: ")
+        if entered_pin == self.user_pin:
+            while True:
+                try:
+                    withdrawal_amount = float(input("💸 Enter the amount you want to withdraw: ₹"))
+                    if withdrawal_amount <= self.account_balance and withdrawal_amount > 0:
+                        self.account_balance -= withdrawal_amount
+                        print(f"✅ Transaction Successful! Remaining Balance: ₹{self.account_balance:.2f}")
+                        break
+                    elif withdrawal_amount <= 0:
+                        print("❌ Please enter a valid withdrawal amount!")
+                    else:
+                        print("❌ Insufficient funds!")
+                except ValueError:
+                    print("❌ Invalid input! Please enter a valid number.")
+        else:
+            print("❌ Incorrect PIN! Access denied.")
+
+# Run the ATM program
+atm = ATM()
+atm.display_menu()
